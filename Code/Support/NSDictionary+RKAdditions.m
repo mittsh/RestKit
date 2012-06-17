@@ -33,8 +33,10 @@ RK_FIX_CATEGORY_BUG(NSDictionary_RKAdditions)
     NSMutableArray* values = [NSMutableArray array];
     for (id key = firstKey; key != nil; key = va_arg(args, id)) {
         id value = va_arg(args, id);
-        [keys addObject:key];
-        [values addObject:value];
+		if (value != nil) {
+			[keys addObject:key];
+			[values addObject:value];
+		}
     }
     va_end(args);
 
