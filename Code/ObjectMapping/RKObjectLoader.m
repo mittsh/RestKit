@@ -408,9 +408,7 @@
                                                               userInfo:userInfo];
         }
         
-        if (! self.isCancelled) {
-            [self informDelegateOfError:error];
-        }
+		[self informDelegateOfError:error];
 
         [self finalizeLoad:NO];
     }
