@@ -502,7 +502,9 @@ static const NSTimeInterval kFlushDelay = 0.3;
         [_delegate requestQueue:self didFailRequest:request withError:error];
     }
 
-    [self removeLoadingRequest:request];
+	// Fixed following ideas given in issue #760
+	// https://github.com/RestKit/RestKit/issues/760
+    [self removeRequest:request];
     [self loadNextInQueue];
 }
 
