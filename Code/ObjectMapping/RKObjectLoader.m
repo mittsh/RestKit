@@ -401,6 +401,7 @@
         }
 
         // If we failed due to a transport error or before we have a response, the request itself failed
+		[self retain];
         if (!self.response || [self.response isFailure]) {
             NSDictionary* userInfo = [NSDictionary dictionaryWithObject:error forKey:RKRequestDidFailWithErrorNotificationUserInfoErrorKey];
             [[NSNotificationCenter defaultCenter] postNotificationName:RKRequestDidFailWithErrorNotification
@@ -411,6 +412,7 @@
 		[self informDelegateOfError:error];
 
         [self finalizeLoad:NO];
+		[self release];
     }
 
     [pool release];
