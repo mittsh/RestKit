@@ -677,6 +677,8 @@ RKRequestMethod RKRequestMethodTypeFromName(NSString *methodName) {
     RKLogDebug(@"Body: %@", [response bodyAsString]);
 
     self.response = response;
+	
+	[self retain];
 
     if ((_cachePolicy & RKRequestCachePolicyEtag) && [response isNotModified]) {
         self.response = [self loadResponseFromCache];
@@ -708,6 +710,8 @@ RKRequestMethod RKRequestMethodTypeFromName(NSString *methodName) {
     // NOTE: This notification must be posted last as the request queue releases the request when it
     // receives the notification
     [[NSNotificationCenter defaultCenter] postNotificationName:RKRequestDidFinishLoadingNotification object:self];
+	
+	[self release];
 }
 
 - (BOOL)isGET {
