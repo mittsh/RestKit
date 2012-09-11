@@ -26,11 +26,12 @@ RK_FIX_CATEGORY_BUG(NSDictionary_RKAdditions)
 
 @implementation NSDictionary (RKAdditions)
 
-+ (id)dictionaryWithKeysAndObjects:(id)firstKey, ... {
++ (id)dictionaryWithKeysAndObjects:(id)firstKey, ...
+{
     va_list args;
     va_start(args, firstKey);
-    NSMutableArray* keys = [NSMutableArray array];
-    NSMutableArray* values = [NSMutableArray array];
+    NSMutableArray *keys = [NSMutableArray array];
+    NSMutableArray *values = [NSMutableArray array];
     for (id key = firstKey; key != nil; key = va_arg(args, id)) {
         id value = va_arg(args, id);
 		if (value != nil) {
@@ -43,7 +44,8 @@ RK_FIX_CATEGORY_BUG(NSDictionary_RKAdditions)
     return [self dictionaryWithObjects:values forKeys:keys];
 }
 
-- (NSDictionary *)dictionaryByReplacingPercentEscapesInEntries {
+- (NSDictionary *)dictionaryByReplacingPercentEscapesInEntries
+{
     NSMutableDictionary *results = [NSMutableDictionary dictionaryWithCapacity:[self count]];
     [self enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop)
      {
@@ -57,9 +59,10 @@ RK_FIX_CATEGORY_BUG(NSDictionary_RKAdditions)
 }
 
 // TODO: Unit tests...
-+ (NSDictionary *)dictionaryWithURLEncodedString:(NSString *)URLEncodedString {
++ (NSDictionary *)dictionaryWithURLEncodedString:(NSString *)URLEncodedString
+{
     NSMutableDictionary *queryComponents = [NSMutableDictionary dictionary];
-    for(NSString *keyValuePairString in [URLEncodedString componentsSeparatedByString:@"&"]) {
+    for (NSString *keyValuePairString in [URLEncodedString componentsSeparatedByString:@"&"]) {
         NSArray *keyValuePairArray = [keyValuePairString componentsSeparatedByString:@"="];
         if ([keyValuePairArray count] < 2) continue; // Verify that there is at least one key, and at least one value.  Ignore extra = signs
         NSString *key = [[keyValuePairArray objectAtIndex:0] stringByReplacingURLEncoding];
@@ -67,7 +70,7 @@ RK_FIX_CATEGORY_BUG(NSDictionary_RKAdditions)
 
         // URL spec says that multiple values are allowed per key
         id results = [queryComponents objectForKey:key];
-        if(results) {
+        if (results) {
             if ([results isKindOfClass:[NSMutableArray class]]) {
                 [(NSMutableArray *)results addObject:value];
             } else {
@@ -83,12 +86,14 @@ RK_FIX_CATEGORY_BUG(NSDictionary_RKAdditions)
     return queryComponents;
 }
 
-- (void)URLEncodePart:(NSMutableArray*)parts path:(NSString*)path value:(id)value {
+- (void)URLEncodePart:(NSMutableArray *)parts path:(NSString *)path value:(id)value
+{
     NSString *encodedPart = [[value description] stringByAddingURLEncoding];
-    [parts addObject:[NSString stringWithFormat: @"%@=%@", path, encodedPart]];
+    [parts addObject:[NSString stringWithFormat:@"%@=%@", path, encodedPart]];
 }
 
-- (void)URLEncodeParts:(NSMutableArray*)parts path:(NSString*)inPath {
+- (void)URLEncodeParts:(NSMutableArray *)parts path:(NSString *)inPath
+{
     [self enumerateKeysAndObjectsUsingBlock:^(id key, id value, BOOL *stop) {
         NSString *encodedKey = [[key description] stringByAddingURLEncoding];
         NSString *path = inPath ? [inPath stringByAppendingFormat:@"[%@]", encodedKey] : encodedKey;
@@ -102,7 +107,7 @@ RK_FIX_CATEGORY_BUG(NSDictionary_RKAdditions)
                 }
 
             }
-        } else if([value isKindOfClass:[NSDictionary class]] || [value isKindOfClass:[NSMutableDictionary class]]) {
+        } else if ([value isKindOfClass:[NSDictionary class]] || [value isKindOfClass:[NSMutableDictionary class]]) {
             [value URLEncodeParts:parts path:path];
         }
         else {
@@ -111,13 +116,15 @@ RK_FIX_CATEGORY_BUG(NSDictionary_RKAdditions)
     }];
 }
 
-- (NSString *)stringWithURLEncodedEntries {
-    NSMutableArray* parts = [NSMutableArray array];
+- (NSString *)stringWithURLEncodedEntries
+{
+    NSMutableArray *parts = [NSMutableArray array];
     [self URLEncodeParts:parts path:nil];
     return [parts componentsJoinedByString:@"&"];
 }
 
-- (NSString *)URLEncodedString {
+- (NSString *)URLEncodedString
+{
     return [self stringWithURLEncodedEntries];
 }
 
