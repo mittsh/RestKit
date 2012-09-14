@@ -207,10 +207,12 @@ return __VA_ARGS__;                                                             
 {
     RKResponseIgnoreDelegateIfCancelled();
     [_body appendData:data];
+	[_request retain];
     [_request invalidateTimeoutTimer];
     if ([[_request delegate] respondsToSelector:@selector(request:didReceiveData:totalBytesReceived:totalBytesExpectedToReceive:)]) {
         [[_request delegate] request:_request didReceiveData:[data length] totalBytesReceived:[_body length] totalBytesExpectedToReceive:_httpURLResponse.expectedContentLength];
     }
+	[_request release];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSHTTPURLResponse *)response
@@ -219,10 +221,12 @@ return __VA_ARGS__;                                                             
     RKLogDebug(@"NSHTTPURLResponse Status Code: %ld", (long)[response statusCode]);
     RKLogDebug(@"Headers: %@", [response allHeaderFields]);
     _httpURLResponse = [response retain];
+	[_request retain];
     [_request invalidateTimeoutTimer];
     if ([[_request delegate] respondsToSelector:@selector(request:didReceiveResponse:)]) {
       [[_request delegate] request:_request didReceiveResponse:self];
     }
+	[_request release];
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
@@ -258,11 +262,13 @@ return __VA_ARGS__;                                                             
 - (void)connection:(NSURLConnection *)connection didSendBodyData:(NSInteger)bytesWritten totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite
 {
     RKResponseIgnoreDelegateIfCancelled();
+	[_request retain];
     [_request invalidateTimeoutTimer];
-
+	
     if ([[_request delegate] respondsToSelector:@selector(request:didSendBodyData:totalBytesWritten:totalBytesExpectedToWrite:)]) {
         [[_request delegate] request:_request didSendBodyData:bytesWritten totalBytesWritten:totalBytesWritten totalBytesExpectedToWrite:totalBytesExpectedToWrite];
     }
+	[_request release];
 }
 
 - (NSString *)localizedStatusCodeString
